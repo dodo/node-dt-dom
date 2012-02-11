@@ -53,6 +53,8 @@ domify = (tpl) ->
 
     tpl.on 'close', (el) ->
         el._dom ?= document.createElement(el.name)
+        for key, value of el.attrs
+            el._dom.setAttribute(key, value)
         release.call el
 
     tpl.on 'text', (el, text) ->

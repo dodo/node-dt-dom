@@ -40,6 +40,8 @@ release = () ->
         delete @_dom_delay
 
 
+# FIXME namespaced attrs?
+
 domify = (tpl) ->
 
     tpl.on 'add', (parent, el) ->
@@ -52,7 +54,13 @@ domify = (tpl) ->
                     parent._dom.appendChild(el._dom)
 
     tpl.on 'close', (el) ->
-        el._dom ?= document.createElement(el.name)
+        # FIXME hm, ... namespace handling should be in asyncxml
+        el._namespace = el.attrs['xmlns'] # FIXME more tolerant check, plz
+
+        if el._namespace?
+            el._dom ?= document.createElementNS(el._namespace, el.name)
+        else
+            el._dom ?= document.createElement(el.name)
         for key, value of el.attrs
             el._dom.setAttribute(key, value)
         release.call el

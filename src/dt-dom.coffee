@@ -57,12 +57,7 @@ domify = (tpl) ->
 
     tpl.on 'text', (el, text) ->
         delay.call el, ->
-            if el._dom.text?
-                el._dom.text = text
-            else if el._dom.textContent?
-                el._dom.textContent = text
-            else if el._dom.innerHTML?
-                el._dom.innerHTML = text
+            el._dom.textContent = text
 
     tpl.on 'raw', (el, html) ->
         delay.call el, ->

@@ -1,4 +1,4 @@
-{ requestAnimationFrame } = require 'request-animation-frame'
+{ Animation } = require 'animation'
 
 # TODO i think this should work with asyncxml as well
 # TODO listen on data and use innerHTML to create all dom elems at once
@@ -7,20 +7,13 @@
 # TODO listen for dom events to know when a dom manipulation is ready
 # TODO mit canvas tag kommt man direkt auf die browser render ticks.
 
-frame_queue = []
-nextAnimationFrame = (cb) ->
-    frame_queue.push (cb)
-    next = ->
-        requestAnimationFrame ->
-            work_frame_queue()
-            do next if frame_queue.length
-    do next if frame_queue.length is 1
+animation = new Animation
+    execution:'5ms'
+    timeout:'120ms'
+    toggle:on
 
-work_frame_queue = ->
-    t1 = t2 = new Date().getTime()
-    while frame_queue.length && t2 - t1 < 5
-        (frame_queue.shift())?()
-        t2 = new Date().getTime()
+nextAnimationFrame = (callback) ->
+    animation.push   (callback)
 
 # delay or invoke job immediately
 delay = (job) ->
@@ -43,6 +36,7 @@ release = () ->
 # FIXME namespaced attrs?
 
 domify = (tpl) ->
+    animation.start()
 
     tpl.on 'add', (parent, el) ->
         # insert into parent
@@ -67,6 +61,7 @@ domify = (tpl) ->
 
     tpl.on 'text', (el, text) ->
         delay.call el, ->
+            # el._dom.appendChild(el._dom.ownerDocument.createTextNode(text))
             el._dom.textContent = text
 
     tpl.on 'raw', (el, html) ->
@@ -77,6 +72,7 @@ domify = (tpl) ->
     tpl.on 'show', (el) ->
         delay.call el, ->
             #el._jquery.show() ####################################
+            # save old-display value in data-display and set new display value visivle or not
 
     tpl.on 'hide', (el) ->
         delay.call el, ->

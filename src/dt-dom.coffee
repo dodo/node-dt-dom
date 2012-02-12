@@ -7,13 +7,6 @@
 # TODO listen for dom events to know when a dom manipulation is ready
 # TODO mit canvas tag kommt man direkt auf die browser render ticks.
 
-animation = new Animation
-    execution:'5ms'
-    timeout:'120ms'
-    toggle:on
-
-nextAnimationFrame = (callback) ->
-    animation.push   (callback)
 
 # delay or invoke job immediately
 delay = (job) ->
@@ -36,6 +29,13 @@ release = () ->
 # FIXME namespaced attrs?
 
 domify = (tpl) ->
+    animation = new Animation
+        execution:'5ms'
+        timeout:'120ms'
+        toggle:on
+
+    nextAnimationFrame = (callback) ->
+        animation.push   (callback)
     animation.start()
 
     tpl.on 'add', (parent, el) ->

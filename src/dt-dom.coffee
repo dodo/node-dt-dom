@@ -37,9 +37,6 @@ domify = (tpl) ->
         execution:'5ms'
         timeout:'100ms'
         toggle:on
-
-    nextAnimationFrame = (callback) ->
-        animation.push   (callback)
     animation.start()
 
     tpl.on 'add', (parent, el) ->
@@ -48,7 +45,7 @@ domify = (tpl) ->
             if parent is tpl.xml
                 parent._dom.push(el._dom)
             else
-                nextAnimationFrame ->
+                animation.push ->
                     parent._dom?.appendChild(el._dom)
 
     tpl.on 'close', (el) ->
@@ -70,7 +67,7 @@ domify = (tpl) ->
 
     tpl.on 'raw', (el, html) ->
         delay.call el, ->
-            nextAnimationFrame ->
+            animation.push ->
                 el._dom?.innerHTML = html
 
     tpl.on 'show', (el) ->
@@ -92,7 +89,7 @@ domify = (tpl) ->
 
     tpl.on 'replace', (el, tag) ->
         delay.call el, ->
-            nextAnimationFrame ->
+            animation.push ->
                 return if removed el
                 _dom = tag._dom ? tag
                 return unless _dom?.length > 0

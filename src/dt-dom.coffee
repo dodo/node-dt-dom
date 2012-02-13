@@ -7,9 +7,12 @@
 # TODO listen for dom events to know when a dom manipulation is ready
 # TODO mit canvas tag kommt man direkt auf die browser render ticks.
 
+removed = (el) ->
+    el.closed is "removed"
 
 # delay or invoke job immediately
 delay = (job) ->
+    return if removed this
     # only when tag is ready
     if @_dom?
         do job
@@ -45,7 +48,7 @@ domify = (tpl) ->
                 parent._dom.push(el._dom)
             else
                 nextAnimationFrame ->
-                    parent._dom.appendChild(el._dom)
+                    parent._dom?.appendChild(el._dom)
 
     tpl.on 'close', (el) ->
         # FIXME hm, ... namespace handling should be in asyncxml
@@ -67,7 +70,7 @@ domify = (tpl) ->
     tpl.on 'raw', (el, html) ->
         delay.call el, ->
             nextAnimationFrame ->
-                el._dom.innerHTML = html
+                el._dom?.innerHTML = html
 
     tpl.on 'show', (el) ->
         delay.call el, ->
@@ -89,6 +92,7 @@ domify = (tpl) ->
     tpl.on 'replace', (el, tag) ->
         delay.call el, ->
             nextAnimationFrame ->
+                return if removed el
                 _dom = tag._dom ? tag
                 return unless _dom?.length > 0
                 el.parent?._dom?.replaceChild(_dom)
@@ -98,7 +102,9 @@ domify = (tpl) ->
                     el.dom = _dom
 
     tpl.on 'remove', (el) ->
-        el.parent?._dom?.removeChild(el._dom) if el._dom?
+        delay.call el.parent, ->
+            el.parent?._dom?.removeChild(el._dom) if el._dom?
+            delete el._dom
 
     tpl.on 'end', ->
         tpl.xml._dom = []

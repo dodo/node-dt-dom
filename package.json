@@ -1,6 +1,6 @@
 { "name": "dt-dom"
 , "description": "Δt dom adapter - async & dynamic templating engine"
-, "version": "0.0.2"
+, "version": "0.0.3"
 , "homepage": "https://github.com/dodo/node-dt-dom"
 , "author": "dodo (https://github.com/dodo)"
 , "repository": {"type": "git", "url": "git://github.com/dodo/node-dt-dom.git"}

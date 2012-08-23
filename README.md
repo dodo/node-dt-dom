@@ -1,3 +1,4 @@
+[![build status](https://secure.travis-ci.org/dodo/node-dt-dom.png)](http://travis-ci.org/dodo/node-dt-dom)
 # [Δt DOM Adapter](https://github.com/dodo/node-dt-dom/)
 
 This is an [DOM](http://www.w3.org/TR/dom/) Adapter for [Δt](http://dodo.github.com/node-dynamictemplate/).
